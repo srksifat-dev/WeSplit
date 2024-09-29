@@ -8,17 +8,49 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+    @State private var checkAmount: Double = 1
+    @State private var peoples: Int = 0
+    @State private var tipPercentage: Int = 10
+    @FocusState private var isFocused: Bool
+    
+    var totalPerPerson: Double {
+        let peopleCount = Double(peoples + 2)
+        let tipSelection = Double(tipPercentage)
+        return ((checkAmount * (tipSelection / 100)) + checkAmount) / peopleCount
     }
-}
-
-#Preview {
-    ContentView()
+    
+    let tipPercentages: [Int] = [10, 15, 20, 25, 30, 0]
+    var body: some View {
+        NavigationStack{
+            Form{
+                Section{
+                    TextField("Check Amount", value: $checkAmount, format: .currency(code: "USD"))
+                        .keyboardType(.decimalPad)
+                        .focused($isFocused)
+                }
+                Section{
+                    Picker("Peoples", selection: $peoples){
+                        ForEach(2..<100){
+                            Text("\($0) People")
+                        }
+                    }
+                }
+                Section("How much do you want to tip?"){
+                    Picker("Tip Percentage",selection: $tipPercentage){
+                        ForEach(tipPercentages,id: \.self){
+                            Text($0,format: .percent)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+                Section{
+                    Text(totalPerPerson,format: .currency(code: "USD"))
+                }
+            }
+            .navigationTitle("We Split")
+            .navigationBarTitleDisplayMode(.inline)
+            
+        }
+        
+    }
 }
