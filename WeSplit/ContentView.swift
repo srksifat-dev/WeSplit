@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var checkAmount: Double = 1
+    @State private var checkAmount: Double = 0
     @State private var peoples: Int = 0
     @State private var tipPercentage: Int = 10
     @FocusState private var isFocused: Bool
@@ -49,7 +49,13 @@ struct ContentView: View {
             }
             .navigationTitle("We Split")
             .navigationBarTitleDisplayMode(.inline)
-            
+            .toolbar{
+                if isFocused{
+                    Button("Done"){
+                        isFocused = false
+                    }
+                }
+            }
         }
         
     }
